@@ -1,0 +1,7 @@
+
+*.uasset
+Binaries/*
+Config/*
+Content/*
+Intermediate/*
+Saved/*
