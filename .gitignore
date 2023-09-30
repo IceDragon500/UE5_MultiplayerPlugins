@@ -1,5 +1,6 @@
 
 *.uasset
+.vs/*
 Binaries/*
 Config/*
 Content/*
