@@ -1,8 +1,8 @@
 
 *.uasset
 .vs/*
+Build/*
 Binaries/*
-Config/*
 Content/*
 Intermediate/*
 Saved/*
