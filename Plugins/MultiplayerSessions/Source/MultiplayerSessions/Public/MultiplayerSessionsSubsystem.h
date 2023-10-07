@@ -8,6 +8,14 @@
 
 #include "MultiplayerSessionsSubsystem.generated.h"
 
+
+//
+//Delcaring our own custom delegates for the Menu class to bind callbacks to
+//为菜单类创建自定义委托，以便将回调与之绑定
+//
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMultiplayerOnCreateSessionComplete, bool, bWasSuccessful);
+
+
 /**
  * 
  */
@@ -40,6 +48,11 @@ public:
 	void StartSession();
 
 
+	//
+	//Our own custom delegates for the Menu class to bind callbacks to
+	//我们为菜单类定制的委托，以便将回调绑定到
+	//
+	FMultiplayerOnCreateSessionComplete MultiplayerOnCreateSessionComplete;
 
 
 protected:

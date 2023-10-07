@@ -30,8 +30,13 @@ protected:
 	//重写UUserWidget中的Initialize()方法
 	virtual bool Initialize() override;
 
-	virtual void NativeDestruct() override;
+	virtual void NativeDestruct() override;//教程中提示，UE5.1以上，使用NativeDestruct()；视频中是UE5.0，使用的是virtual void OnLeveRemovedFromWorld() override;
 
+	//
+	//Callbacks for the custom delegates on the MultiplayerSessionSubsystem
+	//
+	UFUNCTION()
+	void OnCreateSession(bool bWasSuccessful);
 
 private:
 
@@ -56,7 +61,7 @@ private:
 
 	//The subsystem designed to handle all online session functionality
 	//处理所有在线会话功能的子系统
-	UMultiplayerSessionsSubsystem* MultiplayerSesionsSubsystem;
+	UMultiplayerSessionsSubsystem* MultiplayerSessionsSubsystem;
 
 	int32 NumPublicConnections = 4;
 	FString MatchType = TEXT("FreeForAll");

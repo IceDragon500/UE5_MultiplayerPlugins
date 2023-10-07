@@ -55,6 +55,11 @@ void UMultiplayerSessionsSubsystem::CreateSession(int32 NumPublicConnections, FS
 	{
 		//如果创建会话失败，我们就删除会话
 		SessionInterface->ClearOnCancelFindSessionsCompleteDelegate_Handle(StartSessionCompleteDelegateHandle);
+
+		//
+		//Broadcast our own custom delegate
+		//广播我们自己的自定义代表
+		MultiplayerOnCreateSessionComplete.Broadcast(false);
 	}
 
 }
@@ -77,6 +82,14 @@ void UMultiplayerSessionsSubsystem::StartSession()
 
 void UMultiplayerSessionsSubsystem::OnCreateSessionComplete(FName SessionName, bool bWasSuccessful)
 {
+	if (SessionInterface)
+	{
+		SessionInterface->ClearOnCreateSessionCompleteDelegate_Handle(CreateSessionCompleteDelegateHandle);
+
+
+	}
+
+	MultiplayerOnCreateSessionComplete.Broadcast(bWasSuccessful);
 }
 
 void UMultiplayerSessionsSubsystem::OnFindSessionsComplete(bool bWasSuccessful)
