@@ -7,11 +7,11 @@
 #include "OnlineSessionSettings.h"
 #include "MultiplayerSessionsSubsystem.h"
 
-void UMenu::MenuSetup(int32 NumOfPublicConnections, FString TypeOfMatch)
+void UMenu::MenuSetup(int32 NumOfPublicConnections, FString TypeOfMatch, FString LobbyPath)
 {
 	NumPublicConnections = NumOfPublicConnections;
 	MatchType = TypeOfMatch;
-
+	PathToLobby = FString::Printf(TEXT("%s?listen"), *LobbyPath);
 
 	AddToViewport();//将UI设置在界面上
 	SetVisibility(ESlateVisibility::Visible); //设置UI是可见的Visible
@@ -92,7 +92,7 @@ void UMenu::OnCreateSession(bool bWasSuccessful)
 		UWorld* World = GetWorld();
 		if (World)
 		{
-			World->ServerTravel("/Game/ThirdPerson/Maps/Lobby?listen");
+			World->ServerTravel(PathToLobby);
 		}
 	}
 	else
