@@ -6,7 +6,6 @@
 #include "Blueprint/UserWidget.h"
 #include "Interfaces/OnlineSessionInterface.h"
 
-
 #include "Menu.generated.h"
 
 

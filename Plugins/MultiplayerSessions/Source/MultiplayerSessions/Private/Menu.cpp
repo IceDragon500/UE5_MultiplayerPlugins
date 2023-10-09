@@ -3,6 +3,8 @@
 
 #include "Menu.h"
 #include "Components/Button.h"
+#include "OnlineSubsystem.h"
+#include "OnlineSessionSettings.h"
 #include "MultiplayerSessionsSubsystem.h"
 
 void UMenu::MenuSetup(int32 NumOfPublicConnections, FString TypeOfMatch)
@@ -106,10 +108,48 @@ void UMenu::OnCreateSession(bool bWasSuccessful)
 
 void UMenu::OnFindSessions(const TArray<FOnlineSessionSearchResult>& SessionResult, bool bWasSuccessful)
 {
+	if (MultiplayerSessionsSubsystem == nullptr)
+	{
+		return;
+	}
+
+
+	//这里我们简单的循环我们的会话结果
+
+	for (auto Result : SessionResult)
+	{
+		FString SettingValue;
+		Result.Session.SessionSettings.Get(FName("MatchType"), SettingValue);
+
+		if (SettingValue == MatchType)
+		{
+			MultiplayerSessionsSubsystem->JoinSession(Result);
+			return;
+		}
+	}
 }
 
 void UMenu::OnJoinSession(EOnJoinSessionCompleteResult::Type Result)
 {
+	IOnlineSubsystem* Subsystem = IOnlineSubsystem::Get();
+
+	if (Subsystem)
+	{
+		IOnlineSessionPtr SessionInterface = Subsystem->GetSessionInterface();
+
+		if (SessionInterface.IsValid())
+		{
+			FString Address;
+			SessionInterface->GetResolvedConnectString(NAME_GameSession, Address);
+
+			APlayerController* PlayerController = GetGameInstance()->GetFirstLocalPlayerController();
+			if (PlayerController)
+			{
+				PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
+			}
+
+		}
+	}
 }
 
 void UMenu::OnDestroySession(bool bWasSuccessful)
@@ -131,7 +171,10 @@ void UMenu::HostButtonClicked()
 
 void UMenu::JoinButtonClicked()
 {
-
+	if (MultiplayerSessionsSubsystem)
+	{
+		MultiplayerSessionsSubsystem->FindSessions(10000);//找到会话
+	}
 }
 
 void UMenu::MenuTearDown()

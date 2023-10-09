@@ -88,6 +88,8 @@ private:
 	IOnlineSessionPtr SessionInterface;
 	TSharedPtr<FOnlineSessionSettings> LastSessionSettings;
 
+	TSharedPtr<FOnlineSessionSearch> LastSessionSearch;
+
 	//
 	//To add to the Online Session Interface delegate list
 	//添加到在线会话接口代表列表
