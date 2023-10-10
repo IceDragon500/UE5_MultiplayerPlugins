@@ -82,25 +82,31 @@ void UMenu::NativeDestruct()
 
 void UMenu::OnCreateSession(bool bWasSuccessful)
 {
-	if (bWasSuccessful)
+	if (bWasSuccessful)//如果创建成功了
 	{
+		//打印成功的消息提示
 		if (GEngine)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString(TEXT("Session created successfully!!!")));
 		}
 
+		//进入指定的关卡
 		UWorld* World = GetWorld();
 		if (World)
 		{
 			World->ServerTravel(PathToLobby);
 		}
 	}
-	else
+	else//如果创建失败了
 	{
+		//打印失败的提示
 		if (GEngine)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString(TEXT("Failed to create session!!")));
 		}
+
+		//并且将创建按钮重置为有效
+		HostButton->SetIsEnabled(true);
 	}
 
 
@@ -127,6 +133,12 @@ void UMenu::OnFindSessions(const TArray<FOnlineSessionSearchResult>& SessionResu
 			return;
 		}
 	}
+
+	//如果搜索失败，或者 找到的结果等于0，则我们需要将加入按钮重置为有效
+	if (!bWasSuccessful || SessionResult.Num() == 0)
+	{
+		JoinButtom->SetIsEnabled(true);
+	}
 }
 
 void UMenu::OnJoinSession(EOnJoinSessionCompleteResult::Type Result)
@@ -150,6 +162,15 @@ void UMenu::OnJoinSession(EOnJoinSessionCompleteResult::Type Result)
 
 		}
 	}
+
+	//如果我们加入游戏失败了，就是不是Success的状态
+	//则我们需要将加入按钮重置为有效
+	if (Result != EOnJoinSessionCompleteResult::Success)
+	{
+		JoinButtom->SetIsEnabled(true);
+	}
+
+
 }
 
 void UMenu::OnDestroySession(bool bWasSuccessful)
@@ -162,6 +183,8 @@ void UMenu::OnStartSession(bool bWasSuccessful)
 
 void UMenu::HostButtonClicked()
 {
+	//按下之后先将按钮禁用，避免多次创建
+	HostButton->SetIsEnabled(false);
 
 	if (MultiplayerSessionsSubsystem)
 	{
@@ -171,6 +194,9 @@ void UMenu::HostButtonClicked()
 
 void UMenu::JoinButtonClicked()
 {
+	//按下之后先将按钮禁用，避免多次加入
+	JoinButtom->SetIsEnabled(false);
+
 	if (MultiplayerSessionsSubsystem)
 	{
 		MultiplayerSessionsSubsystem->FindSessions(10000);//找到会话
